@@ -1,10 +1,14 @@
+import { writeFileSync, readFileSync, existsSync, fstat } from 'fs';
+
 import axios from 'axios';
 
 class Searchs {
-  history = ['Tegucigalpa', 'Madrid', 'San José'];
+  history = [];
+  dbPath = './db/database.json';
 
   constructor() {
     // TODO: leer db si existe
+    this.readDB();
   }
 
   get paramsMapbox() {
@@ -12,6 +16,14 @@ class Searchs {
       access_token: process.env.MAPBOX_KEY || null,
       limit: 5,
       language: 'es',
+    };
+  }
+
+  get weatherParamsMapbox() {
+    return {
+      appid: process.env.OPENWEATHER_KEY,
+      units: 'metric',
+      lang: 'es',
     };
   }
 
@@ -33,17 +45,6 @@ class Searchs {
     }
   }
 
-  // Params
-  // lat=-37.01667&lon=-57.13333&appid=beb7d0d4c826b08d3ee2c60ab3c04080&units=metric&lang=es
-
-  get weatherParamsMapbox() {
-    return {
-      appid: process.env.OPENWEATHER_KEY,
-      units: 'metric',
-      lang: 'es',
-    };
-  }
-
   async placeWeather(lat, lon) {
     try {
       const instance = axios.create({
@@ -61,6 +62,29 @@ class Searchs {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  createHistory(place = '') {
+    if (!this.history.includes(place)) {
+      this.history.unshift(place);
+    }
+
+    this.saveDB();
+  }
+
+  saveDB() {
+    const payload = {
+      history: this.history,
+    };
+    writeFileSync(this.dbPath, JSON.stringify(payload));
+  }
+
+  readDB() {
+    if (!existsSync(this.dbPath)) return null;
+
+    const info = readFileSync(this.dbPath, { encoding: 'utf8' });
+    const data = JSON.parse(info);
+    this.history = data.history;
   }
 }
 
