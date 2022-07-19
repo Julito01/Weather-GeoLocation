@@ -19,14 +19,15 @@ const main = async () => {
         const input = await readInput('Ciudad:');
         const places = await searchs.city(input);
         const id = await listPlaces(places);
-        console.log({ id });
+        const placeSelected = places.find((place) => place.id === id);
+        console.log(placeSelected);
 
         await searchs.city(input);
         console.log(input);
         console.log('\nInformación de la ciudad\n'.green);
-        console.log('Ciudad:');
-        console.log('Lat:');
-        console.log('Lng:');
+        console.log('Ciudad: ', placeSelected.name.blue);
+        console.log('Latitud: ', placeSelected.lat.toString().blue);
+        console.log('Longitud: ', placeSelected.lng.toString().blue);
         console.log('Temperatura:');
         console.log('Mínima:');
         console.log('Máxima:');
