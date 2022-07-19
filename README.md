@@ -9,3 +9,11 @@ Just run:
 ```
 npm install
 ```
+
+# Run the app
+
+Type:
+
+```
+npm start
+```
