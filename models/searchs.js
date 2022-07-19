@@ -66,6 +66,7 @@ class Searchs {
 
   createHistory(place = '') {
     if (!this.history.includes(place)) {
+      this.history = this.history.splice(0, 4);
       this.history.unshift(place);
     }
 
